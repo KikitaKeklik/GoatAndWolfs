@@ -5,13 +5,19 @@
 
 #include <QWidget>
 #include <QKeyEvent>
-#include <QGridLayout>
 #include <QPainter>
 #include <QTime>
+#include <QImage>
+#include <QDebug>
+#include <QPainterPath>
+#include <QPointF>
+#include <QBrush>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include <cmath>
+
+// QT_BEGIN_NAMESPACE
+// namespace Ui { class MainWindow; }
+// QT_END_NAMESPACE
 
 class MainWindow : public QWidget
 {
@@ -20,14 +26,19 @@ class MainWindow : public QWidget
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    const int N = 12;
-    const int CELL_SIZE = 50;
+    const int N = 3;
+    const int M = 4;
+    const int TRUERAWS = 2 * N + 1;
+    const int CELL_SIZE = 40;
     static const int NWOLFS = 5;
     Goat goat = Goat(N/2 - 1, 0);
     Wolf wolfs[NWOLFS];
     int WIDTH = 800;
     int HEIGHT = 600;
     int turnMade = 0;
+    int gameOver = 0;
+    int numOfDirs = 2;
+    int depthLim = 3;
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -39,11 +50,16 @@ private:
     void drawGoat(QPainter &);
     void drawWolf(QPainter &, Wolf);
     void goatTurn(int);
-    void wolfsTurn(void);
+    void goatTurn(void);
+    float wolfsTurn(int);
+    float goatTurnMM(int);
     int wolfTurn(int , int);
     int checkWin(void);
     void endGame(void);
-    QGridLayout *grid;
-    Ui::MainWindow *ui;
+    char** createAllMoves(void);
+    int sheffer(int, int);
+
+    QPainterPath hexagon;
+    QPainterPath bg;
 };
 #endif // MAINWINDOW_H
